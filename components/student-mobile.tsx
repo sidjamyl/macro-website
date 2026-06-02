@@ -32,6 +32,7 @@ import {
 
 import type { Dashboard, EventItem } from "@/lib/api";
 import { api } from "@/lib/api";
+import { BrandLogo } from "@/components/brand-logo";
 import { colors, toneBackground, type Tone } from "@/design/system";
 import { CheckLine, Eyebrow, FeatureCard, PageTitle, PrimaryButton, SectionTitle, StatusPill, sharedStyles } from "@/components/shared";
 
@@ -48,9 +49,12 @@ export function StudentMobile({ data, onRefresh }: { data: Dashboard; onRefresh:
   return (
     <View style={styles.phone}>
       <View style={styles.mobileHeader}>
-        <View>
-          <Text style={styles.brand}>e-tqan</Text>
-          <Text style={styles.brandSub}>Smart welfare, brighter students</Text>
+        <View style={sharedStyles.row}>
+          <BrandLogo size={34} />
+          <View>
+            <Text style={styles.brand}>e-tqan</Text>
+            <Text style={styles.brandSub}>Smart welfare, brighter students</Text>
+          </View>
         </View>
         <View style={styles.headerIcon}><Bell color={colors.white} size={17} /><Text style={styles.headerBadge}>{data.notifications}</Text></View>
       </View>

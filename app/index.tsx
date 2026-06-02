@@ -6,6 +6,7 @@ import { ChevronDown, Monitor, Smartphone, UserCog, Users, Wrench } from "lucide
 import { StudentMobile } from "@/components/student-mobile";
 import { OperationsMobile } from "@/components/operations-mobile";
 import { AdminPortal, ClubPortal, DoctorPortal } from "@/components/web-portals";
+import { BrandLogo } from "@/components/brand-logo";
 import { colors, shadow } from "@/design/system";
 import { api, type Dashboard } from "@/lib/api";
 
@@ -85,7 +86,7 @@ export default function Demo() {
     <SafeAreaView style={styles.page}>
       <View style={styles.demoBar}>
         <View style={styles.demoIdentity}>
-          <View style={styles.logoMark}><Text style={styles.logoText}>e</Text></View>
+          <BrandLogo size={38} framed />
           <View>
             <Text style={styles.demoTitle}>e-tqan interactive prototype</Text>
             <Text style={styles.demoSubtitle}>Switch roles to explore each dedicated interface</Text>
@@ -137,8 +138,6 @@ const styles = StyleSheet.create({
   page: { flex: 1, backgroundColor: colors.canvas },
   demoBar: { height: 70, zIndex: 20, backgroundColor: colors.white, borderBottomColor: colors.line, borderBottomWidth: 1, paddingHorizontal: 18, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   demoIdentity: { flexDirection: "row", alignItems: "center", gap: 10 },
-  logoMark: { height: 38, width: 38, borderRadius: 12, alignItems: "center", justifyContent: "center", backgroundColor: colors.navy },
-  logoText: { color: colors.orange, fontSize: 25, fontWeight: "800" },
   demoTitle: { color: colors.ink, fontSize: 14, fontWeight: "800" },
   demoSubtitle: { color: colors.muted, fontSize: 10, marginTop: 2 },
   roleSelect: { minWidth: 205, borderColor: colors.line, borderWidth: 1, borderRadius: 11, backgroundColor: colors.white, paddingHorizontal: 9, paddingVertical: 8, flexDirection: "row", gap: 8, alignItems: "center" },

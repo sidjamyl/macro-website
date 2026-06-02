@@ -32,6 +32,7 @@ import {
 
 import type { Dashboard } from "@/lib/api";
 import { colors, toneBackground, type Tone } from "@/design/system";
+import { BrandLogo } from "@/components/brand-logo";
 import { CheckLine, Eyebrow, PageTitle, PrimaryButton, SectionTitle, StatCard, StatusPill, TableHeader, sharedStyles } from "@/components/shared";
 
 type AdminTab = "overview" | "housing" | "maintenance" | "health" | "activities";
@@ -390,7 +391,7 @@ function WebLayout({
   return (
     <View style={styles.webShell}>
       <View style={styles.webHeader}>
-        <View><Text style={styles.webBrand}>e-tqan</Text><Text style={styles.webBrandSub}>{eyebrow}</Text></View>
+        <View style={sharedStyles.row}><BrandLogo size={36} /><View><Text style={styles.webBrand}>e-tqan</Text><Text style={styles.webBrandSub}>{eyebrow}</Text></View></View>
         <View style={sharedStyles.row}>{headerExtra}<View style={styles.webAvatar}><Text style={styles.webAvatarText}>ET</Text></View></View>
       </View>
       <View style={styles.webBody}>

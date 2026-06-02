@@ -4,6 +4,7 @@ import { Bell, Camera, CheckCircle2, ClipboardCheck, MapPin, ShieldAlert, UserCh
 
 import type { Dashboard, MaintenanceTask } from "@/lib/api";
 import { api } from "@/lib/api";
+import { BrandLogo } from "@/components/brand-logo";
 import { colors } from "@/design/system";
 import { Eyebrow, PageTitle, PrimaryButton, SectionTitle, StatusPill, sharedStyles } from "@/components/shared";
 
@@ -21,7 +22,7 @@ export function OperationsMobile({ data, onRefresh }: { data: Dashboard; onRefre
   return (
     <View style={styles.phone}>
       <View style={styles.header}>
-        <View><Text style={styles.brand}>e-tqan ops</Text><Text style={styles.brandSub}>Field operations mobile app</Text></View>
+        <View style={sharedStyles.row}><BrandLogo size={34} /><View><Text style={styles.brand}>e-tqan ops</Text><Text style={styles.brandSub}>Field operations mobile app</Text></View></View>
         <View style={styles.headerIcon}><Bell color={colors.white} size={17} /></View>
       </View>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
