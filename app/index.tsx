@@ -153,5 +153,5 @@ const styles = StyleSheet.create({
   dropdownLabel: { color: colors.ink, fontSize: 11, fontWeight: "800" },
   dropdownSurface: { color: colors.muted, fontSize: 9, marginTop: 1 },
   stage: { flex: 1, justifyContent: "center" },
-  mobileStage: { paddingTop: 14, paddingHorizontal: 12 },
+  mobileStage: { paddingHorizontal: 12 },
 });

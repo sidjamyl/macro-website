@@ -427,7 +427,7 @@ function StudentNav({ active, onSelect }: { active: StudentSection; onSelect: (s
 }
 
 const styles = StyleSheet.create({
-  phone: { flex: 1, width: "100%", maxWidth: 430, minHeight: 700, backgroundColor: "#FCFBF8", alignSelf: "center", overflow: "hidden" },
+  phone: { flex: 1, width: "100%", maxWidth: 430, minHeight: 0, backgroundColor: "#FCFBF8", alignSelf: "center", overflow: "hidden" },
   mobileHeader: { height: 64, backgroundColor: colors.navy, paddingHorizontal: 17, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   brand: { color: colors.white, fontSize: 23, fontWeight: "800", letterSpacing: -1 },
   brandSub: { color: "#BFD2DF", fontSize: 9 },

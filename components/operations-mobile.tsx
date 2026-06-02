@@ -95,7 +95,7 @@ function Verification({ icon, title, text }: { icon: React.ReactNode; title: str
 }
 
 const styles = StyleSheet.create({
-  phone: { flex: 1, width: "100%", maxWidth: 430, minHeight: 700, backgroundColor: "#FCFBF8", alignSelf: "center", overflow: "hidden" },
+  phone: { flex: 1, width: "100%", maxWidth: 430, minHeight: 0, backgroundColor: "#FCFBF8", alignSelf: "center", overflow: "hidden" },
   header: { height: 64, backgroundColor: colors.navy, paddingHorizontal: 17, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   brand: { color: colors.white, fontSize: 20, fontWeight: "800" },
   brandSub: { color: "#BFD2DF", fontSize: 9 },
