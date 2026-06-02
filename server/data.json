@@ -13,6 +13,14 @@
   },
   "appointments": [
     {
+      "id": "apt-mpx0j7lp",
+      "practitioner": "Dr. Nabil Ait Ali",
+      "specialty": "General medicine",
+      "date": "09 Jun",
+      "time": "14:30",
+      "mode": "planned"
+    },
+    {
       "id": "apt-1",
       "practitioner": "Dr. Sara Belkacem",
       "specialty": "General medicine",
@@ -46,8 +54,8 @@
       "category": "Sport",
       "date": "18 Jun",
       "location": "El Alia Stadium",
-      "seats": 18,
-      "registered": false
+      "seats": 17,
+      "registered": true
     },
     {
       "id": "evt-3",
