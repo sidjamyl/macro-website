@@ -391,7 +391,6 @@ function WebLayout({
     <View style={styles.webShell}>
       <View style={styles.webBody}>
         <View style={styles.sidebar}>
-          <Text style={styles.portalEyebrow}>{eyebrow}</Text>
           <Text style={styles.sidebarTitle}>{title}</Text>
           <Text style={styles.sidebarText}>{subtitle}</Text>
           {headerExtra ? <View style={styles.sidebarContext}>{headerExtra}</View> : null}
@@ -431,10 +430,9 @@ function TableRow({ cells, tone }: { cells: string[]; tone?: Tone }) {
 }
 
 const styles = StyleSheet.create({
-  webShell: { flex: 1, minHeight: 700, backgroundColor: colors.canvas },
-  webBody: { flex: 1, flexDirection: "row" },
-  sidebar: { width: 222, backgroundColor: colors.navyDark, padding: 16, gap: 6 },
-  portalEyebrow: { color: colors.orange, fontSize: 8, fontWeight: "800", letterSpacing: 0.8, marginBottom: 4 },
+  webShell: { flex: 1, minHeight: 0, backgroundColor: colors.canvas },
+  webBody: { flex: 1, minHeight: 0, flexDirection: "row" },
+  sidebar: { width: 222, backgroundColor: colors.navyDark, paddingHorizontal: 16, paddingBottom: 16, paddingTop: 22, gap: 6 },
   sidebarTitle: { color: colors.white, fontSize: 15, fontWeight: "800" },
   sidebarText: { color: "#BFD2DF", fontSize: 10, lineHeight: 15 },
   sidebarContext: { marginTop: 8 },
