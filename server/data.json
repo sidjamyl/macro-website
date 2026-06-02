@@ -1,0 +1,62 @@
+{
+  "student": {
+    "name": "Amel Bensalem",
+    "establishment": "ESI Alger",
+    "residence": "Cite universitaire El Alia",
+    "room": "B-214"
+  },
+  "notifications": 3,
+  "housing": {
+    "status": "Room assigned",
+    "completion": 100,
+    "nextStep": "Your accommodation is active for 2026/2027"
+  },
+  "appointments": [
+    {
+      "id": "apt-1",
+      "practitioner": "Dr. Sara Belkacem",
+      "specialty": "General medicine",
+      "date": "05 Jun",
+      "time": "10:30",
+      "mode": "planned"
+    }
+  ],
+  "incidents": [
+    {
+      "id": "inc-1",
+      "title": "Heating issue",
+      "location": "Room B-214",
+      "status": "Assigned",
+      "createdAt": "01 Jun"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-1",
+      "title": "University Robotics Challenge",
+      "category": "Scientific",
+      "date": "12 Jun",
+      "location": "ESI Auditorium",
+      "seats": 33,
+      "registered": true
+    },
+    {
+      "id": "evt-2",
+      "title": "Inter-residence Football Cup",
+      "category": "Sport",
+      "date": "18 Jun",
+      "location": "El Alia Stadium",
+      "seats": 18,
+      "registered": false
+    },
+    {
+      "id": "evt-3",
+      "title": "Digital Art Evening",
+      "category": "Cultural",
+      "date": "23 Jun",
+      "location": "Bab Ezzouar Campus",
+      "seats": 62,
+      "registered": true
+    }
+  ]
+}
