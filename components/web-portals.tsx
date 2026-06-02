@@ -32,7 +32,6 @@ import {
 
 import type { Dashboard } from "@/lib/api";
 import { colors, toneBackground, type Tone } from "@/design/system";
-import { BrandLogo } from "@/components/brand-logo";
 import { CheckLine, Eyebrow, PageTitle, PrimaryButton, SectionTitle, StatCard, StatusPill, TableHeader, sharedStyles } from "@/components/shared";
 
 type AdminTab = "overview" | "housing" | "maintenance" | "health" | "activities";
@@ -390,14 +389,12 @@ function WebLayout({
 }) {
   return (
     <View style={styles.webShell}>
-      <View style={styles.webHeader}>
-        <View style={sharedStyles.row}><BrandLogo size={36} /><View><Text style={styles.webBrand}>e-tqan</Text><Text style={styles.webBrandSub}>{eyebrow}</Text></View></View>
-        <View style={sharedStyles.row}>{headerExtra}<View style={styles.webAvatar}><Text style={styles.webAvatarText}>ET</Text></View></View>
-      </View>
       <View style={styles.webBody}>
         <View style={styles.sidebar}>
+          <Text style={styles.portalEyebrow}>{eyebrow}</Text>
           <Text style={styles.sidebarTitle}>{title}</Text>
           <Text style={styles.sidebarText}>{subtitle}</Text>
+          {headerExtra ? <View style={styles.sidebarContext}>{headerExtra}</View> : null}
           <View style={{ gap: 5, marginTop: 12 }}>
             {nav.map(([id, label, icon]) => <Pressable key={id} onPress={() => onNavigate(id)} style={[styles.sideItem, active === id && styles.sideItemActive]}>{icon}<Text style={[styles.sideText, active === id && { color: colors.white }]}>{label}</Text></Pressable>)}
           </View>
@@ -435,15 +432,12 @@ function TableRow({ cells, tone }: { cells: string[]; tone?: Tone }) {
 
 const styles = StyleSheet.create({
   webShell: { flex: 1, minHeight: 700, backgroundColor: colors.canvas },
-  webHeader: { height: 66, backgroundColor: colors.white, borderBottomColor: colors.line, borderBottomWidth: 1, paddingHorizontal: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  webBrand: { color: colors.navy, fontSize: 23, fontWeight: "800", letterSpacing: -1 },
-  webBrandSub: { color: colors.muted, fontSize: 9, fontWeight: "800", letterSpacing: 0.8 },
-  webAvatar: { height: 36, width: 36, borderRadius: 11, backgroundColor: colors.orange, alignItems: "center", justifyContent: "center" },
-  webAvatarText: { color: colors.white, fontSize: 11, fontWeight: "800" },
   webBody: { flex: 1, flexDirection: "row" },
   sidebar: { width: 222, backgroundColor: colors.navyDark, padding: 16, gap: 6 },
+  portalEyebrow: { color: colors.orange, fontSize: 8, fontWeight: "800", letterSpacing: 0.8, marginBottom: 4 },
   sidebarTitle: { color: colors.white, fontSize: 15, fontWeight: "800" },
   sidebarText: { color: "#BFD2DF", fontSize: 10, lineHeight: 15 },
+  sidebarContext: { marginTop: 8 },
   sideItem: { flexDirection: "row", gap: 9, alignItems: "center", padding: 10, borderRadius: 9 },
   sideItemActive: { backgroundColor: colors.orange },
   sideText: { color: "#BFD2DF", fontSize: 11, fontWeight: "700" },
