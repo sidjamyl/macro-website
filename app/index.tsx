@@ -13,16 +13,26 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Bell,
+  BedDouble,
+  BriefcaseMedical,
   Building2,
+  CheckCircle2,
+  ClipboardCheck,
+  ClipboardList,
   CalendarDays,
   ChevronRight,
   CircleAlert,
+  FileCheck2,
   HeartPulse,
   Home,
+  LayoutDashboard,
   MapPin,
+  MessageSquareText,
+  PartyPopper,
   ShieldAlert,
   Sparkles,
   Stethoscope,
+  UserCog,
   Users,
   Wrench,
   X,
@@ -46,6 +56,7 @@ const colors = {
 
 type Tab = "home" | "housing" | "health" | "activities";
 type ModalName = "appointment" | "incident" | "sos" | null;
+type Role = "student" | "onou" | "maintenance";
 
 const fallback: Dashboard = {
   student: {
@@ -71,11 +82,38 @@ const fallback: Dashboard = {
     { id: "evt-2", title: "Inter-residence Football Cup", category: "Sport", date: "18 Jun", location: "El Alia Stadium", seats: 18, registered: false },
     { id: "evt-3", title: "Digital Art Evening", category: "Cultural", date: "23 Jun", location: "Bab Ezzouar Campus", seats: 62, registered: true },
   ],
+  operations: {
+    onou: {
+      metrics: [
+        { label: "Housing occupancy", value: "91%", note: "Across 18 residences" },
+        { label: "Open incidents", value: "27", note: "6 require attention" },
+        { label: "Appointments today", value: "146", note: "84% planned" },
+        { label: "Active events", value: "32", note: "This month" },
+      ],
+      alerts: [
+        { id: "alert-1", title: "6 maintenance SLA alerts", text: "El Alia and Bouraoui residences require follow-up.", tone: "danger" },
+        { id: "alert-2", title: "Room assignment campaign", text: "842 validated applications are ready for automatic assignment.", tone: "warning" },
+      ],
+      approvals: [
+        { id: "approval-1", title: "Inter-university tournament", text: "National university basketball cup", status: "Review" },
+        { id: "approval-2", title: "Residence appeal batch", text: "18 accommodation appeals pending", status: "Review" },
+      ],
+    },
+    maintenance: {
+      agent: "Karim Haddad",
+      residence: "Cite universitaire El Alia",
+      tasks: [
+        { id: "task-1", title: "Heating issue", location: "Building B - Room 214", priority: "High", status: "Assigned", deadline: "Today, 16:00" },
+        { id: "task-2", title: "Water leak", location: "Building A - Floor 2", priority: "High", status: "In progress", deadline: "Today, 14:30" },
+      ],
+    },
+  },
 };
 
 export default function App() {
   const [data, setData] = useState<Dashboard>(fallback);
   const [tab, setTab] = useState<Tab>("home");
+  const [role, setRole] = useState<Role>("student");
   const [modal, setModal] = useState<ModalName>(null);
   const [connected, setConnected] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -96,22 +134,25 @@ export default function App() {
   }, []);
 
   const content = useMemo(() => {
+    if (role === "onou") return <OnouDashboard data={data} />;
+    if (role === "maintenance") return <MaintenanceDashboard data={data} onRefresh={refresh} />;
     if (tab === "housing") return <Housing data={data} onIncident={() => setModal("incident")} onSos={() => setModal("sos")} />;
     if (tab === "health") return <Healthcare data={data} onBook={() => setModal("appointment")} />;
     if (tab === "activities") return <Activities data={data} onRefresh={refresh} />;
     return <DashboardHome data={data} goTo={setTab} onBook={() => setModal("appointment")} />;
-  }, [data, tab]);
+  }, [data, role, tab]);
 
   return (
     <SafeAreaView style={styles.page}>
       <View style={styles.shell}>
-        <Header data={data} connected={connected} />
+        <Header data={data} connected={connected} role={role} />
+        <RoleSwitcher role={role} onSelect={(nextRole) => { setRole(nextRole); setTab("home"); }} />
         {loading ? (
           <View style={styles.loader}><ActivityIndicator color={colors.orange} size="large" /></View>
         ) : (
           content
         )}
-        <BottomNav active={tab} onSelect={setTab} />
+        {role === "student" && <BottomNav active={tab} onSelect={setTab} />}
       </View>
       <AppointmentModal open={modal === "appointment"} onClose={() => setModal(null)} onDone={refresh} />
       <IncidentModal open={modal === "incident"} room={data.student.room} onClose={() => setModal(null)} onDone={refresh} />
@@ -120,12 +161,12 @@ export default function App() {
   );
 }
 
-function Header({ data, connected }: { data: Dashboard; connected: boolean }) {
+function Header({ data, connected, role }: { data: Dashboard; connected: boolean; role: Role }) {
   return (
     <View style={styles.header}>
       <View>
         <Text style={styles.brand}>e-tqan</Text>
-        <Text style={styles.brandSub}>Student welfare, simply connected</Text>
+        <Text style={styles.brandSub}>{role === "student" ? "Student welfare, simply connected" : role === "onou" ? "ONOU supervision console" : "Field operations mobile app"}</Text>
       </View>
       <View style={styles.headerActions}>
         <View style={[styles.onlineDot, { backgroundColor: connected ? "#6ED6A3" : colors.orange }]} />
@@ -157,20 +198,15 @@ function DashboardHome({ data, goTo, onBook }: { data: Dashboard; goTo: (tab: Ta
         </View>
       </View>
 
-      <SectionTitle title="Your essentials" subtitle="Everything that matters today" />
-      <View style={styles.twoColumns}>
-        <QuickCard icon={<Building2 color={colors.navy} size={22} />} label="Accommodation" value={data.housing.status} tone="blue" onPress={() => goTo("housing")} />
-        <QuickCard icon={<HeartPulse color={colors.brown} size={22} />} label="Healthcare" value={`${data.appointments.length} upcoming visit`} tone="cream" onPress={() => goTo("health")} />
+      <SectionTitle title="What do you need?" subtitle="Choose a service to get started" />
+      <View style={styles.serviceGrid}>
+        <ServiceCard icon={<BedDouble color={colors.navy} size={22} />} label="My housing" text="Room, requests and appeals" tone="blue" onPress={() => goTo("housing")} />
+        <ServiceCard icon={<Stethoscope color={colors.brown} size={22} />} label="Book a doctor" text="Planned or immediate care" tone="cream" onPress={onBook} />
+        <ServiceCard icon={<PartyPopper color={colors.orange} size={22} />} label="Campus events" text="Activities, clubs and sport" tone="orange" onPress={() => goTo("activities")} />
+        <ServiceCard icon={<Wrench color={colors.success} size={22} />} label="Report an issue" text="Send a maintenance request" tone="green" onPress={() => goTo("housing")} />
+        <ServiceCard icon={<MessageSquareText color={colors.brown} size={22} />} label="Complaint" text="Submit or track a complaint" tone="cream" onPress={() => goTo("housing")} />
+        <ServiceCard icon={<ShieldAlert color={colors.danger} size={22} />} label="Emergency SOS" text="Alert residence security" tone="red" onPress={() => goTo("housing")} />
       </View>
-
-      <Pressable style={styles.appointmentBanner} onPress={onBook}>
-        <View style={styles.bannerIcon}><Stethoscope color={colors.white} size={23} /></View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.bannerTitle}>Need to see a practitioner?</Text>
-          <Text style={styles.bannerText}>Book a planned or immediate appointment.</Text>
-        </View>
-        <ChevronRight color={colors.white} size={20} />
-      </Pressable>
 
       <SectionTitle title="Coming up" subtitle="Campus life around you" action="View all" onPress={() => goTo("activities")} />
       <EventCard event={data.events[0]} compact />
@@ -182,6 +218,104 @@ function DashboardHome({ data, goTo, onBook }: { data: Dashboard; goTo: (tab: Ta
           <Text style={styles.noticeText}>{data.housing.nextStep}</Text>
         </View>
       </View>
+    </ScrollView>
+  );
+}
+
+function RoleSwitcher({ role, onSelect }: { role: Role; onSelect: (role: Role) => void }) {
+  const roles: { id: Role; label: string }[] = [
+    { id: "student", label: "Student" },
+    { id: "onou", label: "ONOU admin" },
+    { id: "maintenance", label: "Maintenance" },
+  ];
+  return (
+    <View style={styles.roleBar}>
+      {roles.map((item) => (
+        <Pressable key={item.id} onPress={() => onSelect(item.id)} style={[styles.roleChip, role === item.id && styles.roleChipActive]}>
+          <Text style={[styles.roleChipText, role === item.id && styles.roleChipTextActive]}>{item.label}</Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+}
+
+function OnouDashboard({ data }: { data: Dashboard }) {
+  return (
+    <ScrollView contentContainerStyle={styles.opsScroll} showsVerticalScrollIndicator={false}>
+      <PageIntro eyebrow="ONOU ADMINISTRATION" title="National overview" text="Supervise welfare services and identify the actions that need attention." />
+      <View style={styles.metricGrid}>
+        {data.operations.onou.metrics.map((metric) => (
+          <View key={metric.label} style={styles.metricCard}>
+            <Text style={styles.metricValue}>{metric.value}</Text>
+            <Text style={styles.metricLabel}>{metric.label}</Text>
+            <Text style={styles.metricNote}>{metric.note}</Text>
+          </View>
+        ))}
+      </View>
+      <SectionTitle title="Priority alerts" subtitle="Cases that need intervention" />
+      {data.operations.onou.alerts.map((alert) => (
+        <View key={alert.id} style={[styles.alertCard, alert.tone === "danger" ? styles.alertDanger : styles.alertWarning]}>
+          <CircleAlert color={alert.tone === "danger" ? colors.danger : colors.orange} size={20} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.listTitle}>{alert.title}</Text>
+            <Text style={styles.listMeta}>{alert.text}</Text>
+          </View>
+          <ChevronRight color={colors.muted} size={18} />
+        </View>
+      ))}
+      <SectionTitle title="Validation queue" subtitle="Review and approve pending requests" />
+      {data.operations.onou.approvals.map((approval) => (
+        <View key={approval.id} style={styles.listCard}>
+          <View style={[styles.listIcon, { backgroundColor: colors.paleBlue }]}><FileCheck2 color={colors.navy} size={18} /></View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.listTitle}>{approval.title}</Text>
+            <Text style={styles.listMeta}>{approval.text}</Text>
+          </View>
+          <Text style={styles.stateText}>{approval.status}</Text>
+        </View>
+      ))}
+    </ScrollView>
+  );
+}
+
+function MaintenanceDashboard({ data, onRefresh }: { data: Dashboard; onRefresh: () => Promise<void> }) {
+  const updateTask = async (id: string, status: "In progress" | "Completed") => {
+    try {
+      await api.updateTask(id, status);
+      await onRefresh();
+    } catch {
+      Alert.alert("Demo mode", "Start the local API to update interventions.");
+    }
+  };
+  const tasks = data.operations.maintenance.tasks;
+  return (
+    <ScrollView contentContainerStyle={styles.opsScroll} showsVerticalScrollIndicator={false}>
+      <PageIntro eyebrow="FIELD OPERATIONS" title={`Hello, ${data.operations.maintenance.agent.split(" ")[0]}`} text={`${data.operations.maintenance.residence} | ${tasks.length} assigned interventions`} />
+      <View style={styles.techSummary}>
+        <View><Text style={styles.techCount}>{tasks.filter((task) => task.status !== "Completed").length}</Text><Text style={styles.techLabel}>Open tasks</Text></View>
+        <View><Text style={styles.techCount}>{tasks.filter((task) => task.priority === "High").length}</Text><Text style={styles.techLabel}>High priority</Text></View>
+        <View><Text style={styles.techCount}>{tasks.filter((task) => task.status === "Completed").length}</Text><Text style={styles.techLabel}>Completed</Text></View>
+      </View>
+      <SectionTitle title="Today's interventions" subtitle="Work through your assigned tasks" />
+      {tasks.map((task) => (
+        <View key={task.id} style={styles.taskCard}>
+          <View style={styles.taskTop}>
+            <View style={[styles.priorityPill, task.priority === "High" ? styles.priorityHigh : styles.priorityLow]}><Text style={[styles.priorityText, task.priority === "High" && { color: colors.danger }]}>{task.priority}</Text></View>
+            <Text style={styles.taskDeadline}>{task.deadline}</Text>
+          </View>
+          <Text style={styles.taskTitle}>{task.title}</Text>
+          <View style={styles.inlineMeta}><MapPin size={14} color={colors.muted} /><Text style={styles.listMeta}>{task.location}</Text></View>
+          <View style={styles.taskBottom}>
+            <Text style={styles.taskStatus}>{task.status}</Text>
+            {task.status !== "Completed" && (
+              <Pressable style={styles.smallButton} onPress={() => updateTask(task.id, task.status === "Assigned" ? "In progress" : "Completed")}>
+                <Text style={styles.smallButtonText}>{task.status === "Assigned" ? "Start task" : "Mark completed"}</Text>
+              </Pressable>
+            )}
+            {task.status === "Completed" && <CheckCircle2 color={colors.success} size={20} />}
+          </View>
+        </View>
+      ))}
     </ScrollView>
   );
 }
@@ -442,6 +576,17 @@ function QuickCard({ icon, label, value, tone, onPress }: { icon: React.ReactNod
   return <Pressable onPress={onPress} style={[styles.quickCard, { backgroundColor: tone === "blue" ? colors.paleBlue : "#F8F1E4" }]}>{icon}<Text style={styles.quickLabel}>{label}</Text><Text style={styles.quickValue}>{value}</Text><ChevronRight color={colors.muted} size={17} /></Pressable>;
 }
 
+function ServiceCard({ icon, label, text, tone, onPress }: { icon: React.ReactNode; label: string; text: string; tone: "blue" | "cream" | "orange" | "green" | "red"; onPress: () => void }) {
+  const backgrounds = { blue: colors.paleBlue, cream: "#F8F1E4", orange: "#FFF4DF", green: "#EAF7F0", red: "#FDEEEE" };
+  return (
+    <Pressable onPress={onPress} style={[styles.serviceCard, { backgroundColor: backgrounds[tone] }]}>
+      {icon}
+      <Text style={styles.serviceCardTitle}>{label}</Text>
+      <Text style={styles.serviceCardText}>{text}</Text>
+    </Pressable>
+  );
+}
+
 function ActionTile({ icon, title, text, onPress }: { icon: React.ReactNode; title: string; text: string; onPress: () => void }) {
   return <Pressable style={styles.actionTile} onPress={onPress}>{icon}<Text style={styles.tileTitle}>{title}</Text><Text style={styles.tileText}>{text}</Text></Pressable>;
 }
@@ -457,7 +602,13 @@ const styles = StyleSheet.create({
   iconButton: { width: 38, height: 38, borderRadius: 19, backgroundColor: "rgba(255,255,255,0.12)", alignItems: "center", justifyContent: "center" },
   badge: { position: "absolute", top: -3, right: -3, minWidth: 17, height: 17, borderRadius: 9, backgroundColor: colors.orange, alignItems: "center", justifyContent: "center" },
   badgeText: { color: colors.white, fontSize: 9, fontWeight: "800" },
+  roleBar: { backgroundColor: colors.white, borderBottomColor: colors.line, borderBottomWidth: 1, flexDirection: "row", gap: 7, paddingHorizontal: 13, paddingVertical: 9 },
+  roleChip: { flex: 1, borderRadius: 10, paddingVertical: 8, alignItems: "center", backgroundColor: "#F3F5F5" },
+  roleChipActive: { backgroundColor: colors.navy },
+  roleChipText: { color: colors.muted, fontSize: 10, fontWeight: "800" },
+  roleChipTextActive: { color: colors.white },
   scroll: { padding: 17, paddingBottom: 96, gap: 17 },
+  opsScroll: { padding: 17, paddingBottom: 30, gap: 15 },
   loader: { flex: 1, alignItems: "center", justifyContent: "center" },
   hero: { backgroundColor: colors.navy, borderRadius: 22, padding: 18, gap: 18, overflow: "hidden" },
   heroTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
@@ -473,6 +624,10 @@ const styles = StyleSheet.create({
   sectionHeading: { color: colors.ink, fontSize: 18, fontWeight: "800", letterSpacing: -0.4 },
   sectionSubtitle: { color: colors.muted, fontSize: 12, marginTop: 3 },
   sectionAction: { color: colors.orange, fontSize: 12, fontWeight: "800" },
+  serviceGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  serviceCard: { width: "48%", minHeight: 122, borderRadius: 16, padding: 13, gap: 7 },
+  serviceCardTitle: { color: colors.ink, fontSize: 14, fontWeight: "800", marginTop: 2 },
+  serviceCardText: { color: colors.muted, fontSize: 11, lineHeight: 15 },
   twoColumns: { flexDirection: "row", gap: 11 },
   quickCard: { flex: 1, minHeight: 146, padding: 14, borderRadius: 17, gap: 8 },
   quickLabel: { color: colors.muted, fontSize: 11, fontWeight: "700" },
@@ -531,6 +686,27 @@ const styles = StyleSheet.create({
   eventTitle: { color: colors.ink, paddingHorizontal: 12, fontSize: 14, fontWeight: "800" },
   inlineMeta: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 12 },
   eventBottom: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingRight: 12, paddingBottom: 12 },
+  metricGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  metricCard: { width: "48%", borderRadius: 15, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.line, padding: 13, gap: 4 },
+  metricValue: { color: colors.navy, fontSize: 25, fontWeight: "800" },
+  metricLabel: { color: colors.ink, fontSize: 12, fontWeight: "800" },
+  metricNote: { color: colors.muted, fontSize: 10 },
+  alertCard: { borderRadius: 14, borderWidth: 1, padding: 12, flexDirection: "row", alignItems: "center", gap: 10 },
+  alertDanger: { backgroundColor: "#FDEEEE", borderColor: "#F3CACA" },
+  alertWarning: { backgroundColor: "#FFF6E5", borderColor: "#F4D99C" },
+  techSummary: { backgroundColor: colors.navy, borderRadius: 17, flexDirection: "row", justifyContent: "space-around", paddingVertical: 16 },
+  techCount: { color: colors.white, fontSize: 23, fontWeight: "800", textAlign: "center" },
+  techLabel: { color: "#BFD2DF", fontSize: 10, fontWeight: "700", marginTop: 3 },
+  taskCard: { backgroundColor: colors.white, borderRadius: 16, borderColor: colors.line, borderWidth: 1, padding: 13, gap: 9 },
+  taskTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  priorityPill: { borderRadius: 9, paddingHorizontal: 8, paddingVertical: 5 },
+  priorityHigh: { backgroundColor: "#FDEEEE" },
+  priorityLow: { backgroundColor: colors.paleBlue },
+  priorityText: { color: colors.navy, fontSize: 10, fontWeight: "800" },
+  taskDeadline: { color: colors.muted, fontSize: 10, fontWeight: "700" },
+  taskTitle: { color: colors.ink, fontSize: 16, fontWeight: "800" },
+  taskBottom: { borderTopColor: colors.line, borderTopWidth: 1, paddingTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  taskStatus: { color: colors.orange, fontSize: 11, fontWeight: "800" },
   smallButton: { backgroundColor: colors.orange, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10 },
   smallButtonDone: { backgroundColor: "#EDF8F2" },
   smallButtonText: { color: colors.white, fontSize: 11, fontWeight: "800" },

@@ -58,5 +58,95 @@
       "seats": 62,
       "registered": true
     }
-  ]
+  ],
+  "operations": {
+    "onou": {
+      "metrics": [
+        {
+          "label": "Housing occupancy",
+          "value": "91%",
+          "note": "Across 18 residences"
+        },
+        {
+          "label": "Open incidents",
+          "value": "27",
+          "note": "6 require attention"
+        },
+        {
+          "label": "Appointments today",
+          "value": "146",
+          "note": "84% planned"
+        },
+        {
+          "label": "Active events",
+          "value": "32",
+          "note": "This month"
+        }
+      ],
+      "alerts": [
+        {
+          "id": "alert-1",
+          "title": "6 maintenance SLA alerts",
+          "text": "El Alia and Bouraoui residences require follow-up.",
+          "tone": "danger"
+        },
+        {
+          "id": "alert-2",
+          "title": "Room assignment campaign",
+          "text": "842 validated applications are ready for automatic assignment.",
+          "tone": "warning"
+        }
+      ],
+      "approvals": [
+        {
+          "id": "approval-1",
+          "title": "Inter-university tournament",
+          "text": "National university basketball cup",
+          "status": "Review"
+        },
+        {
+          "id": "approval-2",
+          "title": "Residence appeal batch",
+          "text": "18 accommodation appeals pending",
+          "status": "Review"
+        },
+        {
+          "id": "approval-3",
+          "title": "Awareness campaign",
+          "text": "Mental health week publication",
+          "status": "Ready"
+        }
+      ]
+    },
+    "maintenance": {
+      "agent": "Karim Haddad",
+      "residence": "Cite universitaire El Alia",
+      "tasks": [
+        {
+          "id": "task-1",
+          "title": "Heating issue",
+          "location": "Building B - Room 214",
+          "priority": "High",
+          "deadline": "Today, 16:00",
+          "status": "Assigned"
+        },
+        {
+          "id": "task-2",
+          "title": "Water leak",
+          "location": "Building A - Floor 2",
+          "priority": "High",
+          "status": "In progress",
+          "deadline": "Today, 14:30"
+        },
+        {
+          "id": "task-3",
+          "title": "Replace corridor light",
+          "location": "Building C - Floor 1",
+          "priority": "Low",
+          "status": "Assigned",
+          "deadline": "Tomorrow, 10:00"
+        }
+      ]
+    }
+  }
 }

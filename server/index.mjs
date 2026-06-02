@@ -67,6 +67,15 @@ createServer(async (req, res) => {
   if (req.method === "POST" && req.url === "/api/sos") {
     return json(res, 201, { reference: `SOS-${Date.now().toString().slice(-6)}` });
   }
+  const taskMatch = req.url?.match(/^\/api\/tasks\/([^/]+)\/status$/);
+  if (req.method === "POST" && taskMatch) {
+    const input = await body(req);
+    const task = data.operations.maintenance.tasks.find((item) => item.id === taskMatch[1]);
+    if (!task) return json(res, 404, { error: "Task not found" });
+    task.status = input.status;
+    await saveData(data);
+    return json(res, 200, task);
+  }
   return json(res, 404, { error: "Not found" });
 }).listen(4000, "0.0.0.0", () => {
   console.log("e-tqan demo API listening on http://localhost:4000");

@@ -25,6 +25,21 @@ export type EventItem = {
   registered: boolean;
 };
 
+export type MaintenanceTask = {
+  id: string;
+  title: string;
+  location: string;
+  priority: "High" | "Medium" | "Low";
+  status: "Assigned" | "In progress" | "Completed";
+  deadline: string;
+};
+
+export type OnouMetric = {
+  label: string;
+  value: string;
+  note: string;
+};
+
 export type Dashboard = {
   student: { name: string; establishment: string; residence: string; room: string };
   notifications: number;
@@ -32,6 +47,18 @@ export type Dashboard = {
   appointments: Appointment[];
   incidents: Incident[];
   events: EventItem[];
+  operations: {
+    onou: {
+      metrics: OnouMetric[];
+      alerts: { id: string; title: string; text: string; tone: "warning" | "danger" | "info" }[];
+      approvals: { id: string; title: string; text: string; status: string }[];
+    };
+    maintenance: {
+      agent: string;
+      residence: string;
+      tasks: MaintenanceTask[];
+    };
+  };
 };
 
 declare const process: { env: { EXPO_PUBLIC_API_URL?: string } };
@@ -56,4 +83,6 @@ export const api = {
   registerEvent: (id: string) =>
     request<EventItem>(`/api/events/${id}/register`, { method: "POST" }),
   triggerSos: () => request<{ reference: string }>("/api/sos", { method: "POST" }),
+  updateTask: (id: string, status: MaintenanceTask["status"]) =>
+    request<MaintenanceTask>(`/api/tasks/${id}/status`, { method: "POST", body: JSON.stringify({ status }) }),
 };
