@@ -13,6 +13,14 @@
   },
   "appointments": [
     {
+      "id": "apt-mpx47vpe",
+      "practitioner": "Dr. Nabil Ait Ali",
+      "specialty": "General medicine",
+      "date": "09 Jun",
+      "time": "14:30",
+      "mode": "planned"
+    },
+    {
       "id": "apt-mpx0j7lp",
       "practitioner": "Dr. Nabil Ait Ali",
       "specialty": "General medicine",
@@ -136,7 +144,7 @@
           "location": "Building B - Room 214",
           "priority": "High",
           "deadline": "Today, 16:00",
-          "status": "Assigned"
+          "status": "Completed"
         },
         {
           "id": "task-2",
